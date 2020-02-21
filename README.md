@@ -36,7 +36,7 @@ Role Variables
     * `enabled` --- boolean value with should this repository be enabled or disabled, __mandatory__.
     * `key_url` --- URL to ASCII armored key for repository, default undefined.
     * `key_id` --- PGP key ID - only needed for Ubuntu repositories, default undefined.
-* `packages_ubuntu_pin` --- list dicts of packges to pin on Debian.
+* `packages_ubuntu_pin` --- list dicts of packges to pin on Debian, default `{}`.
     * `package` --- packages to pin, default not set.
     * `pin` --- pin to, default not set.
     * `pin_priority` --- priority, default not set.
