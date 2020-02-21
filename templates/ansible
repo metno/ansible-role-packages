@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+{% for item in package_pin %}
+Package: {{ item.package  }}
+Pin: {{ item.pin }}
+Pin-Priority: {{ item.priority }}
+
+{% endfor %}

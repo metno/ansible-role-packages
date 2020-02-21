@@ -1,0 +1,64 @@
+# vim: ai et ts=2 st=2 sw=2 :
+---
+- name: is dnf or not
+  set_fact:
+    is_dnf: '{{ ansible_distribution_major_version | int > 7 }}'
+
+# selinux bindings
+
+- name: install dependencies centos 6 and 7
+  yum:
+    name:
+      - libselinux-python
+  when: ansible_distribution_major_version|int in [6, 7]
+  check_mode: false
+
+- name: install dependencies centos 8
+  dnf:
+    name:
+      - python3-libselinux
+  when: ansible_distribution_major_version|int == 8
+  check_mode: false
+
+# add repos
+
+- name: add repositories
+  yum_repository:
+    file: ansible
+    name: '{{ item.name }}'
+    description: '{{ item.description }}'
+    baseurl: '{{ item.baseurl }}'
+    gpgkey: '{{ item.gpgkey }}'
+    state: '{{ "present" if item.enabled | bool else "absent" }}'
+  loop: '{{ packages_cenos_repositories }}'
+
+# exclude packages
+
+- name: exclude yum packages
+  ini_file:
+    path: /etc/yum.conf
+    section: main
+    option: exclude
+    value: '{{ packages_centos_exclude | join(" ")  }}'
+  when: not is_dnf
+
+- name: exclude dnf packages
+  ini_file:
+    path: /etc/dnf/dnf.conf
+    section: main
+    option: exclude
+    value: '{{ packages_centos_exclude | join(" ")  }}'
+  when: is_dnf
+
+# install packges
+
+- name: install yum packages
+  yum:
+    name: '{{ packages_centos_install }}'
+  when: not is_dnf
+
+- name: install dnf packages
+  dnf:
+    name: '{{ packages_centos_install }}'
+  when: is_dnf
+

@@ -1,0 +1,50 @@
+# vim: ai et ts=2 st=2 sw=2 :
+---
+- hosts: all
+  become: true
+  roles:
+    - role: ../../.
+      packages_install:
+        - vim
+        - nmap
+      packages_ubuntu_install:
+        - emacs
+      packages_ubuntu_repositories:
+        - repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+          key_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+          key_id: 54A647F9048D5688D7DA2ABE6A030B21BA07F4FB
+          enabled: true
+        - repo: deb https://linux.dell.com/repo/community/openmanage/940/bionic bionic main
+          key_url: https://linux.dell.com/repo/pgp_pubkeys/0x1285491434D8786F.asc
+          key_id: 1285491434D8786F
+          enabled: true
+      package_pin:
+        - package: kubectl
+          pin: 'release n={{ ansible_distribution_release }}'
+          priority: 10
+      packages_ubuntu_hold:
+        - emacs
+        - vim
+      packages_ubuntu_unhold:
+        - nano
+      packages_centos_install:
+        - emacs
+      packages_cenos_repositories:
+        - name: kubernetes
+          description: kubernetes repository
+          baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+          gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+          enabled: true
+        - name: dell-system-update_os_independent
+          description: dell system update
+          baseurl: https://linux.dell.com/repo/hardware/dsu/os_independent/
+          gpgkey: https://linux.dell.com/repo/pgp_pubkeys/0x756ba70b1019ced6.asc https://linux.dell.com/repo/pgp_pubkeys/0x1285491434D8786F.asc https://linux.dell.com/repo/pgp_pubkeys/0xca77951d23b66a9d.asc
+          enabled: true
+      packages_centos_exclude:
+        - nano
+
+  tasks:
+    - name: test install of kubectl on all except precise
+      package:
+        name: kubectl
+      when: ansible_distribution_release != "precise"

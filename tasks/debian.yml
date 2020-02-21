@@ -1,0 +1,65 @@
+# vim: ai et ts=2 st=2 sw=2 :
+---
+- name: find repositories with key_id
+  set_fact:
+    repo_with_key_url: '{{ packages_ubuntu_repositories | selectattr("key_id", "defined") | selectattr("enabled") | list }}'
+
+# install check mode dependencies
+
+- name: install check mode dependencies python2
+  apt:
+    name: python-apt
+  check_mode: false
+  when: ansible_distribution_version|int <= 16
+
+- name: install check mode dependencies python3
+  apt:
+    name: python3-apt
+  check_mode: false
+  when: ansible_distribution_version|int > 16
+
+# add repos
+
+- name: add apt keys
+  apt_key:
+    url: '{{ item.key_url }}'
+    id: '{{ item.key_id | default(omit) }}'
+  loop: '{{ repo_with_key_url }}'
+
+- name: add repositories
+  apt_repository:
+    filename: ansible
+    repo: '{{ item.repo }}'
+    state: '{{ "present" if item.enabled | bool else "absent" }}'
+    update_cache: true
+  loop: '{{ packages_ubuntu_repositories }}'
+
+# hold/unhold packages
+
+- name: hold packages
+  shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
+  register: apt_mark_hold
+  failed_when: false
+  changed_when: apt_mark_hold.rc == 0 and "already" not in apt_mark_hold.stdout
+  loop: '{{ packages_ubuntu_hold }}'
+
+- name: unhold packages
+  shell: 'apt-mark -s unhold {{ item }} && apt-mark unhold {{ item }}'
+  register: apt_mark_unhold
+  failed_when: false
+  changed_when: apt_mark_unhold.rc == 0 and "already" not in apt_mark_unhold.stdout
+  loop: '{{ packages_ubuntu_unhold }}'
+
+# pin packages
+
+- name: pin packages
+  template:
+    src: ansible
+    dest: /etc/apt/preferences.d/ansible
+
+# install packages
+
+- name: install apt packages
+  apt:
+   name: '{{ packages_ubuntu_install }}'
+
