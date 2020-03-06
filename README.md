@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `1.0.1` --- fix various typos
 * `1.0.0` --- initial version
 * `master` --- latest development version
 

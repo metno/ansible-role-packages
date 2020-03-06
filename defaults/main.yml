@@ -9,5 +9,5 @@ packages_ubuntu_hold: []
 packages_ubuntu_unhold: []
 
 packages_centos_install: []
-packages_cenos_repositories: []
+packages_centos_repositories: []
 packages_centos_exclude: []
