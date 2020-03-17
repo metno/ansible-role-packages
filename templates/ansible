@@ -1,4 +1,6 @@
+{% if packages_ubuntu_pin | length > 0 %}
 # {{ ansible_managed }}
+{% endif %}
 
 {% for item in packages_ubuntu_pin %}
 Package: {{ item.package  }}

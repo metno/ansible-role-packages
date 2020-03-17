@@ -1,12 +1,15 @@
 # vim: ai et ts=2 st=2 sw=2 :
 ---
 packages_install: []
+packages_unattended_upgrades: true
+packages_only_security_upgrades: false
 
 packages_ubuntu_install: []
 packages_ubuntu_repositories: []
 packages_ubuntu_pin: []
 packages_ubuntu_hold: []
 packages_ubuntu_unhold: []
+packages_ubuntu_update_backports: false
 
 packages_centos_install: []
 packages_centos_repositories: []

@@ -62,3 +62,46 @@
     name: '{{ packages_centos_install }}'
   when: is_dnf
 
+# unattended_upgrades
+
+- name: set config options for automatic update
+  set_fact:
+    config_file:
+      dnf: /etc/dnf/automatic.conf
+      yum: /etc/yum/yum-cron.conf
+    update_strategy_key:
+      dnf: upgrade_type
+      yum: update_cmd
+    update_strategy: '{{ "security" if packages_only_security_upgrades else "default"  }}'
+    dnf_or_yum: '{{ "dnf" if is_dnf else "yum" }}'
+
+- name: install dnf-automatic or yum-cron
+  package:
+    name: '{{ "dnf-automatic" if is_dnf else "yum-cron" }}'
+
+- name: update configuration
+  ini_file:
+    path: '{{ config_file[ dnf_or_yum ] }}'
+    section: '{{ item.s }}'
+    option: '{{ item.o }}'
+    value: '{{ item.v }}'
+  loop:
+    - "{{ { 's': 'commands', 'o': update_strategy_key[dnf_or_yum], 'v': update_strategy } }}"
+    - { 's': 'commands', 'o': 'apply_updates', 'v': 'yes' }
+    - { 's': 'commands', 'o': 'random_sleep', 'v': 360 }
+
+
+- name: enable dnf-automatic
+  systemd:
+    name: dnf-automatic.timer
+    state: started
+    enabled: true
+  when: is_dnf
+
+- name: enable yum-cron
+  service:
+    name: yum-cron
+    state: started
+    enabled: true
+  when: not is_dnf
+

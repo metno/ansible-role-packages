@@ -28,6 +28,8 @@ Role Variables
 
 
 * `packages_install` --- list of packages to install on Ubuntu or CentOS, default `[]`.
+* `packages_unattended_upgrades` --- automatic upgrade security packages, default `true`
+* `packages_only_security_upgrades` --- only update security patches else all packages, default `true`
 
 ### Ubuntu specific
 
@@ -43,6 +45,7 @@ Role Variables
     * `pin_priority` --- priority, default not set.
 * `packages_ubuntu_hold` --- list of packages to hold in Ubuntu or exclude on CentOS - CentOS accepts globbing, default `[]`.
 * `packages_ubuntu_unhold` --- list of packages to remove hold on in Ubuntu, default `[]`.
+* `packages_ubuntu_update_backports` --- update backports during unattended upgrades, default `false`
 
 ### CentOS specific
 

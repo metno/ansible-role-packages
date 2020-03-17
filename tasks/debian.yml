@@ -6,12 +6,6 @@
 
 # install check mode dependencies
 
-- name: install check mode dependencies python2
-  apt:
-    name: python-apt
-  check_mode: false
-  when: ansible_distribution_version|int <= 16
-
 - name: install check mode dependencies python3
   apt:
     name: python3-apt
@@ -34,7 +28,7 @@
     update_cache: true
   loop: '{{ packages_ubuntu_repositories }}'
 
-# hold/unhold packages
+# unhold packages
 
 - name: hold packages
   shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
@@ -61,5 +55,50 @@
 
 - name: install apt packages
   apt:
-   name: '{{ packages_ubuntu_install }}'
+    name: '{{ packages_ubuntu_install }}'
+    update_cache: true
+    cache_valid_time: 3600
 
+# hold packages
+
+- name: hold packages
+  shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
+  register: apt_mark_hold
+  failed_when: false
+  changed_when: apt_mark_hold.rc == 0 and "already" not in apt_mark_hold.stdout
+  loop: '{{ packages_ubuntu_hold }}'
+
+# unattended_upgrades
+
+- name: install unattended upgrades
+  apt:
+    name: unattended-upgrades
+  when: packages_unattended_upgrades
+
+- name: uncomment updates
+  replace:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^//(.*distro_codename.*updates.*)$'
+    replace: '\1'
+  when: not packages_only_security_upgrades
+
+- name: comment updates
+  replace:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^(.*distro_codename.*updates.*)$'
+    replace: '//\1'
+  when: packages_only_security_upgrades
+
+- name: uncomment backports
+  replace:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^//(.*distro_codename.*backports.*)$'
+    replace: '\1'
+  when: packages_ubuntu_update_backports
+
+- name: comment backports
+  replace:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^(.*distro_codename.*backports.*)$'
+    replace: '//\1'
+  when: not packages_ubuntu_update_backports
