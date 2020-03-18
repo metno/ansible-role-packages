@@ -46,8 +46,8 @@
       packages_ubuntu_update_backports: true
       package_automatic_reboot: true
 
-  tasks:
-    - name: test install of kubectl on all except precise
-      package:
-        name: kubectl
-      when: ansible_distribution_release != "precise"
+#  tasks:
+#    - name: test install of kubectl on all except precise
+#      package:
+#        name: kubectl
+#      when: ansible_distribution_release != "precise"
