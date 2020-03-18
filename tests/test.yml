@@ -42,8 +42,9 @@
           enabled: true
       packages_centos_exclude:
         - nano
-      packages_only_security_upgrades: false
-      packages_ubuntu_update_backports: true
+      packages_only_security_upgrades: true
+      packages_ubuntu_update_backports: false
+      package_automatic_reboot: true
 
   tasks:
     - name: test install of kubectl on all except precise

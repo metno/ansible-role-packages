@@ -30,6 +30,9 @@ Role Variables
 * `packages_install` --- list of packages to install on Ubuntu or CentOS, default `[]`.
 * `packages_unattended_upgrades` --- automatic upgrade security packages, default `true`
 * `packages_only_security_upgrades` --- only update security patches else all packages, default `true`
+* `package_automatic_reboot` --- enable automatic reboot if needed after update, default `false`
+* `package_automatic_reboot_hour` --- hour to reboot if needed, default `3`
+* `package_automatic_reboot_minute` --- minute of hour to reboot if needed, default `13`
 
 ### Ubuntu specific
 
@@ -107,6 +110,8 @@ Example Playbook
                enabled: true
            packages_centos_exclude:
              - nano
+           packages_only_security_upgrades: false
+           packages_ubuntu_update_backports: true
 
 Testing
 -------

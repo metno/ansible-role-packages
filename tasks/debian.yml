@@ -85,7 +85,7 @@
 - name: comment updates
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
-    regexp: '^(.*distro_codename.*updates.*)$'
+    regexp: '^[^/](.*distro_codename.*updates.*)$'
     replace: '//\1'
   when: packages_only_security_upgrades
 
@@ -99,6 +99,24 @@
 - name: comment backports
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
-    regexp: '^(.*distro_codename.*backports.*)$'
+    regexp: '^[^/](.*distro_codename.*backports.*)$'
     replace: '//\1'
   when: not packages_ubuntu_update_backports
+
+- name: uncomment automatic reboot
+  replace:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^//(.*Automatic-Reboot.*)$'
+    replace: '\1'
+
+- name: enable or disable automatic reboot
+  replace:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^(U.*Automatic-Reboot.*")(true|false)(".*)$'
+    replace: '\1{{ package_automatic_reboot | string | lower }}\3'
+
+- name: set reboot time
+  replace:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '(.*Automatic-Reboot-Time.*)"..\:.."(.*)$'
+    replace: '\1"{{ "%02d" | format(package_automatic_reboot_hour|int) }}:{{ "%02d" | format(package_automatic_reboot_minute|int) }}"\2'

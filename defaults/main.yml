@@ -2,7 +2,10 @@
 ---
 packages_install: []
 packages_unattended_upgrades: true
-packages_only_security_upgrades: false
+packages_only_security_upgrades: true
+package_automatic_reboot: false
+package_automatic_reboot_hour: 3
+package_automatic_reboot_minute: 13
 
 packages_ubuntu_install: []
 packages_ubuntu_repositories: []
