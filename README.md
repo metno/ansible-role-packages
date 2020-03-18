@@ -3,6 +3,10 @@ packages
 
 This role handles installed packages, repositories and pinning.
 
+**Caveats**
+
+* Restart automatically is not implemented for CentOS 6.
+
 Version
 -------
 
@@ -112,6 +116,7 @@ Example Playbook
              - nano
            packages_only_security_upgrades: false
            packages_ubuntu_update_backports: true
+           package_automatic_reboot: true
 
 Testing
 -------
