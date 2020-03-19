@@ -113,10 +113,10 @@
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^(U.*Automatic-Reboot.*")(true|false)(".*)$'
-    replace: '\1{{ package_automatic_reboot | string | lower }}\3'
+    replace: '\1{{ packages_automatic_reboot | string | lower }}\3'
 
 - name: set reboot time
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '(.*Automatic-Reboot-Time.*)"..\:.."(.*)$'
-    replace: '\1"{{ "%02d" | format(package_automatic_reboot_hour|int) }}:{{ "%02d" | format(package_automatic_reboot_minute|int) }}"\2'
+    replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour|int) }}:{{ "%02d" | format(packages_automatic_reboot_minute|int) }}"\2'

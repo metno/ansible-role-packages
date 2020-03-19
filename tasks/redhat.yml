@@ -108,9 +108,9 @@
 - name: add cronjob for reboot on centos 7 and up
   cron:
     name: automatic reboot after kernel upgrade and so on
-    hour: '{{ package_automatic_reboot_hour|string }}'
-    minute: '{{ package_automatic_reboot_minute|string }}'
+    hour: '{{ packages_automatic_reboot_hour|string }}'
+    minute: '{{ packages_automatic_reboot_minute|string }}'
     job: |
       needs-restarting -r &> /dev/null || shutdown -r 1
-    state: '{{ "present" if package_automatic_reboot else "absent" }}'
+    state: '{{ "present" if packages_automatic_reboot else "absent" }}'
   when: ansible_distribution_major_version|int > 6

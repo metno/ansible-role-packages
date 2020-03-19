@@ -18,7 +18,7 @@
           key_url: https://linux.dell.com/repo/pgp_pubkeys/0x1285491434D8786F.asc
           key_id: 1285491434D8786F
           enabled: true
-      package_pin:
+      packages_ubuntu_pin:
         - package: kubectl
           pin: 'release n={{ ansible_distribution_release }}'
           priority: 10
@@ -44,7 +44,7 @@
         - nano
       packages_only_security_upgrades: false
       packages_ubuntu_update_backports: true
-      package_automatic_reboot: true
+      packages_automatic_reboot: true
 
 #  tasks:
 #    - name: test install of kubectl on all except precise

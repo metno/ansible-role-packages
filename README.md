@@ -35,9 +35,9 @@ Role Variables
 * `packages_install` --- list of packages to install on Ubuntu or CentOS, default `[]`.
 * `packages_unattended_upgrades` --- automatic upgrade security packages, default `true`
 * `packages_only_security_upgrades` --- only update security patches else all packages, default `true`
-* `package_automatic_reboot` --- enable automatic reboot if needed after update, default `false`
-* `package_automatic_reboot_hour` --- hour to reboot if needed, default `3`
-* `package_automatic_reboot_minute` --- minute of hour to reboot if needed, default `13`
+* `packages_automatic_reboot` --- enable automatic reboot if needed after update, default `false`
+* `packages_automatic_reboot_hour` --- hour to reboot if needed, default `3`
+* `packages_automatic_reboot_minute` --- minute of hour to reboot if needed, default `13`
 
 ### Ubuntu specific
 
@@ -91,7 +91,7 @@ Example Playbook
                key_url: https://linux.dell.com/repo/pgp_pubkeys/0x1285491434D8786F.asc
                key_id: 1285491434D8786F
                enabled: true
-           package_pin:
+           packages_ubuntu_pin:
              - package: kubectl
                pin: 'release n={{ ansible_distribution_release }}'
                priority: 10
@@ -117,7 +117,7 @@ Example Playbook
              - nano
            packages_only_security_upgrades: false
            packages_ubuntu_update_backports: true
-           package_automatic_reboot: true
+           packages_automatic_reboot: true
 
 Testing
 -------
