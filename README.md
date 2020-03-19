@@ -10,6 +10,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.0.1` --- fixing variable names
 * `2.0.0` --- auto update security packages, optional reboot on kernel change
 * `1.0.1` --- fix various typos
 * `1.0.0` --- initial version
