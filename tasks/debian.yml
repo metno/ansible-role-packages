@@ -70,6 +70,11 @@
 
 # unattended_upgrades
 
+- name: check if unnatended upgrades file exists
+  stat:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+  register: unattended_file
+
 - name: install unattended upgrades
   apt:
     name: unattended-upgrades
@@ -80,43 +85,57 @@
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*updates.*)$'
     replace: '\1'
-  when: not packages_only_security_upgrades
+  when:
+    - not packages_only_security_upgrades
+    - unattended_file.stat.exists|bool
 
 - name: comment updates
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*updates.*)$'
     replace: '//\1'
-  when: packages_only_security_upgrades
+  when:
+    - packages_only_security_upgrades
+    - unattended_file.stat.exists|bool
 
 - name: uncomment backports
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*backports.*)$'
     replace: '\1'
-  when: packages_ubuntu_update_backports
+  when:
+    - packages_ubuntu_update_backports
+    - unattended_file.stat.exists|bool
 
 - name: comment backports
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*backports.*)$'
     replace: '//\1'
-  when: not packages_ubuntu_update_backports
+  when:
+    - not packages_ubuntu_update_backports
+    - unattended_file.stat.exists|bool
 
 - name: uncomment automatic reboot
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*Automatic-Reboot.*)$'
     replace: '\1'
+  when:
+    - unattended_file.stat.exists|bool
 
 - name: enable or disable automatic reboot
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^(U.*Automatic-Reboot.*")(true|false)(".*)$'
     replace: '\1{{ packages_automatic_reboot | string | lower }}\3'
+  when:
+    - unattended_file.stat.exists|bool
 
 - name: set reboot time
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '(.*Automatic-Reboot-Time.*)"..\:.."(.*)$'
     replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour|int) }}:{{ "%02d" | format(packages_automatic_reboot_minute|int) }}"\2'
+  when:
+    - unattended_file.stat.exists|bool
