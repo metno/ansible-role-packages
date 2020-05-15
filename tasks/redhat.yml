@@ -30,7 +30,7 @@
     baseurl: '{{ item.baseurl }}'
     gpgkey: '{{ item.gpgkey }}'
     state: '{{ "present" if item.enabled | bool else "absent" }}'
-  loop: '{{ packages_cenos_repositories }}'
+  loop: '{{ packages_centos_repositories }}'
 
 # exclude packages
 

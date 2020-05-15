@@ -104,7 +104,7 @@ Example Playbook
              - nano
            packages_centos_install:
              - emacs
-           packages_cenos_repositories:
+           packages_centos_repositories:
              - name: kubernetes
                description: kubernetes repository
                baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
