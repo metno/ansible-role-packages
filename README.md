@@ -10,6 +10,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.0.3` --- fixed spelling error on `packages_centos_repositories` variable
 * `2.0.2` --- fixed check mode when unattended upgrades is not installed
 * `2.0.1` --- fixing variable names
 * `2.0.0` --- auto update security packages, optional reboot on kernel change
