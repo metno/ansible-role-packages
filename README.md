@@ -10,6 +10,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.1.0` --- adding `packages_services_enabled` and `packages_services_disabled` to start+enable or stop+disable services
 * `2.0.3` --- fixed spelling error on `packages_centos_repositories` variable
 * `2.0.2` --- fixed check mode when unattended upgrades is not installed
 * `2.0.1` --- fixing variable names
@@ -41,6 +42,8 @@ Role Variables
 * `packages_automatic_reboot` --- enable automatic reboot if needed after update, default `false`
 * `packages_automatic_reboot_hour` --- hour to reboot if needed, default `3`
 * `packages_automatic_reboot_minute` --- minute of hour to reboot if needed, default `13`
+* `packages_services_enabled` --- list of services to start and enable at boot time, default `[]`
+* `packages_services_disabled` --- list of services to stop and disable at boot time, default `[]`
 
 ### Ubuntu specific
 

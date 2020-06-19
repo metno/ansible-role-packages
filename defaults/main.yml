@@ -6,6 +6,8 @@ packages_only_security_upgrades: true
 packages_automatic_reboot: false
 packages_automatic_reboot_hour: 3
 packages_automatic_reboot_minute: 13
+packages_services_enabled: []
+packages_services_disabled: []
 
 packages_ubuntu_install: []
 packages_ubuntu_repositories: []

@@ -7,6 +7,7 @@
       packages_install:
         - vim
         - nmap
+        - rsyslog
       packages_ubuntu_install:
         - emacs
       packages_ubuntu_repositories:
@@ -45,6 +46,11 @@
       packages_only_security_upgrades: false
       packages_ubuntu_update_backports: true
       packages_automatic_reboot: true
+      packages_services_enabled:
+        - rsyslog
+      packages_services_disabled:
+        - rsyslog
+
 
 #  tasks:
 #    - name: test install of kubectl on all except precise

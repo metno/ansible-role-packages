@@ -19,3 +19,16 @@
     name: '{{ packages_install }}'
     state: present
 
+- name: services to start and enable on boot
+  service:
+    name: '{{ item }}'
+    state: started
+    enabled: true
+  loop: '{{ packages_services_enabled }}'
+
+- name: services to stop and disable on boot
+  service:
+    name: '{{ item }}'
+    state: stopped
+    enabled: false
+  loop: '{{ packages_services_disabled }}'
