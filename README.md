@@ -10,6 +10,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.1.1` --- prepare for github
 * `2.1.0` --- adding `packages_services_enabled` and `packages_services_disabled` to start+enable or stop+disable services
 * `2.0.3` --- fixed spelling error on `packages_centos_repositories` variable
 * `2.0.2` --- fixed check mode when unattended upgrades is not installed
@@ -155,7 +156,7 @@ cat ~/.ssh/config | grep ^Host | cut -d\  -f2 | xargs cssh
 License
 -------
 
-MIT / BSD
+GPLv2
 
 Author Information
 ------------------

@@ -5,7 +5,7 @@ galaxy_info:
   description: Install packages, repositories and pinning.
   company: MET Norway
 
-  license: MIT / BSD
+  license: GPLv2
 
   min_ansible_version: 2.8
 
