@@ -10,6 +10,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.1.2` --- tested with Ansible 2.9.11
 * `2.1.1` --- prepare for github
 * `2.1.0` --- adding `packages_services_enabled` and `packages_services_disabled` to start+enable or stop+disable services
 * `2.0.3` --- fixed spelling error on `packages_centos_repositories` variable
