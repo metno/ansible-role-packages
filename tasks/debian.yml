@@ -12,6 +12,12 @@
   check_mode: false
   when: ansible_distribution_version|int > 16
 
+- name: install check mode dependencies python2
+  apt:
+    name: python-apt
+  check_mode: false
+  when: ansible_distribution_version|int <= 16
+
 # add repos
 
 - name: add apt keys
@@ -119,7 +125,7 @@
 - name: uncomment automatic reboot
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
-    regexp: '^//(.*Automatic-Reboot.*)$'
+    regexp: '^//(Unattended-Upgrade::Automatic-Reboot.*)$'
     replace: '\1'
   when:
     - unattended_file.stat.exists|bool
