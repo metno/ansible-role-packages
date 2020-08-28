@@ -10,6 +10,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.2.1` --- fix linting, remove testing for ubuntu precise
 * `2.2.0` --- added ubuntu focal, 20.04
 * `2.1.2` --- tested with Ansible 2.9.11
 * `2.1.1` --- prepare for github
@@ -31,7 +32,6 @@ This role is limited to
 * Ubuntu 18.04 - Bionic
 * Ubuntu 16.04 - Xenial
 * Ubuntu 14.04 - Trusty
-* Ubuntu 12.04 - Precise
 * CentOS 8
 * CentOS 7
 * CentOS 6
