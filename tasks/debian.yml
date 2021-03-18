@@ -84,7 +84,9 @@
 
 - name: install unattended upgrades
   apt:
-    name: unattended-upgrades
+    pkg:
+      - unattended-upgrades
+      - update-notifier-common
   when: packages_unattended_upgrades
 
 - name: uncomment updates
