@@ -10,6 +10,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.2.2` --- adding missing dependency on `update-notifier-common`
 * `2.2.1` --- fix linting, remove testing for ubuntu precise
 * `2.2.0` --- added ubuntu focal, 20.04
 * `2.1.2` --- tested with Ansible 2.9.11
@@ -34,7 +35,6 @@ This role is limited to
 * Ubuntu 14.04 - Trusty
 * CentOS 8
 * CentOS 7
-* CentOS 6
 
 Role Variables
 --------------
