@@ -9,12 +9,14 @@
 - name: install check mode dependencies python3
   apt:
     name: python3-apt
+    cache_valid_time: 3600
   check_mode: false
   when: ansible_distribution_version|int > 16
 
 - name: install check mode dependencies python2
   apt:
     name: python-apt
+    cache_valid_time: 3600
   check_mode: false
   when: ansible_distribution_version|int <= 16
 
@@ -84,7 +86,9 @@
 
 - name: install unattended upgrades
   apt:
-    name: unattended-upgrades
+    pkg:
+      - unattended-upgrades
+      - update-notifier-common
   when: packages_unattended_upgrades
 
 - name: uncomment updates

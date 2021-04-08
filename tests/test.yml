@@ -13,7 +13,7 @@
       packages_ubuntu_repositories:
         - repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
           key_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-          key_id: 54A647F9048D5688D7DA2ABE6A030B21BA07F4FB
+          key_id: 7F92E05B31093BEF5A3C2D38FEEA9169307EA071
           enabled: true
         - repo: deb https://linux.dell.com/repo/community/openmanage/940/bionic bionic main
           key_url: https://linux.dell.com/repo/pgp_pubkeys/0x1285491434D8786F.asc
