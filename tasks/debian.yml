@@ -13,13 +13,6 @@
   check_mode: false
   when: ansible_distribution_version|int > 16
 
-- name: install check mode dependencies python2
-  apt:
-    name: python-apt
-    cache_valid_time: 3600
-  check_mode: false
-  when: ansible_distribution_version|int <= 16
-
 # add repos
 
 - name: add apt keys

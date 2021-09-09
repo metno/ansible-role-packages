@@ -4,22 +4,6 @@
   set_fact:
     is_dnf: '{{ ansible_distribution_major_version | int > 7 }}'
 
-# selinux bindings
-
-- name: install dependencies centos 6 and 7
-  yum:
-    name:
-      - libselinux-python
-  when: ansible_distribution_major_version|int in [6, 7]
-  check_mode: false
-
-- name: install dependencies centos 8
-  dnf:
-    name:
-      - python3-libselinux
-  when: ansible_distribution_major_version|int == 8
-  check_mode: false
-
 # add repos
 
 - name: add repositories
