@@ -129,7 +129,7 @@ Example Playbook
 Testing
 -------
 
-To test RHEL8 with vagrant, install `vagrant-register
+To test RHEL8 with vagrant, install `vagrant-register`
 
 ```bash
 vagrant plugin install vagrant-registration
