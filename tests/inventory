@@ -1,9 +1,8 @@
 [test]
+focal
 bionic
 xenial
-trusty
-precise
 centos8
 centos7
-centos6
+rhel8
 

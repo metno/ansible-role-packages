@@ -3,13 +3,10 @@ packages
 
 This role handles installed packages, repositories and pinning.
 
-**Caveats**
-
-* Restart automatically is not implemented for CentOS 6.
-
 Version
 -------
 
+* `2.3.0` --- add rhel8 support + remove trusty
 * `2.2.2` --- adding missing dependency on `update-notifier-common`
 * `2.2.1` --- fix linting, remove testing for ubuntu precise
 * `2.2.0` --- added ubuntu focal, 20.04
@@ -32,9 +29,9 @@ This role is limited to
 * Ubuntu 20.04 - Bionic
 * Ubuntu 18.04 - Bionic
 * Ubuntu 16.04 - Xenial
-* Ubuntu 14.04 - Trusty
 * CentOS 8
 * CentOS 7
+* RHEL 8
 
 Role Variables
 --------------
@@ -65,9 +62,9 @@ Role Variables
 * `packages_ubuntu_unhold` --- list of packages to remove hold on in Ubuntu, default `[]`.
 * `packages_ubuntu_update_backports` --- update backports during unattended upgrades, default `false`
 
-### CentOS specific
+### CentOS/RHEL specific
 
-* `packages_centos_install` --- list of packages to install on CentOS, default `[]`.
+* `packages_centos_install` --- list of packages to install on CentOS or RHEL, default `[]`.
 * `packages_centos_repositories` --- list of dictionaries with repositories to add, `{}`.
     * `name` --- name of repository, __mandatory__.
     * `description` --- repository description, __mandatory__.
@@ -79,7 +76,7 @@ Role Variables
 Dependencies
 ------------
 
-None.
+The RHEL8 image needs to be registered with RedHat to install packages.
 
 Example Playbook
 ----------------
@@ -131,6 +128,12 @@ Example Playbook
 
 Testing
 -------
+
+To test RHEL8 with vagrant, install `vagrant-register
+
+```bash
+vagrant plugin install vagrant-registration
+```
 
 ### Test environment for all OSes
 
