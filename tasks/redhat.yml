@@ -83,14 +83,18 @@
     name: dnf-automatic.timer
     state: started
     enabled: true
-  when: is_dnf
+  when:
+    - is_dnf
+    - packages_unattended_upgrades|bool
 
 - name: enable yum-cron
   service:
     name: yum-cron
     state: started
     enabled: true
-  when: not is_dnf
+  when:
+    - not is_dnf
+    - packages_unattended_upgrades|bool
 
 - name: add cronjob for reboot on centos 7 and up
   cron:
