@@ -78,7 +78,7 @@
     - { 's': 'commands', 'o': 'random_sleep', 'v': 360 }
 
 
-- name: enable dnf-automatic
+- name: enable/disable dnf-automatic
   systemd:
     name: dnf-automatic.timer
     state: '{{ "started" if packages_unattended_upgrades else "stopped" }}'
