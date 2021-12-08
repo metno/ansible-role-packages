@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.3.1` --- fixed missing support for packages_unattended_upgrades for redhat family
 * `2.3.0` --- add rhel8 support + remove trusty
 * `2.2.2` --- adding missing dependency on `update-notifier-common`
 * `2.2.1` --- fix linting, remove testing for ubuntu precise

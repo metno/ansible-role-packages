@@ -78,18 +78,18 @@
     - { 's': 'commands', 'o': 'random_sleep', 'v': 360 }
 
 
-- name: enable dnf-automatic
+- name: enable/disable dnf-automatic
   systemd:
     name: dnf-automatic.timer
-    state: started
-    enabled: true
+    state: '{{ "started" if packages_unattended_upgrades else "stopped" }}'
+    enabled: '{{ "true" if packages_unattended_upgrades else "false" }}'
   when: is_dnf
 
-- name: enable yum-cron
+- name: enable/disable yum-cron
   service:
     name: yum-cron
-    state: started
-    enabled: true
+    state: '{{ "started" if packages_unattended_upgrades else "stopped" }}'
+    enabled: '{{ "true" if packages_unattended_upgrades else "false" }}'
   when: not is_dnf
 
 - name: add cronjob for reboot on centos 7 and up
