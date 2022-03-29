@@ -1,8 +1,8 @@
 [test]
+jammy
 focal
 bionic
 xenial
-centos8
 centos7
 rhel8
 

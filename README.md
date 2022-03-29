@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.4.0` --- Added Jammy and removed centos8 support
 * `2.3.1` --- fixed missing support for packages_unattended_upgrades for redhat family
 * `2.3.0` --- add rhel8 support + remove trusty
 * `2.2.2` --- adding missing dependency on `update-notifier-common`
@@ -27,10 +28,10 @@ Requirements
 
 This role is limited to
 
-* Ubuntu 20.04 - Bionic
+* Ubuntu 22.04 - Jammy
+* Ubuntu 20.04 - Focal
 * Ubuntu 18.04 - Bionic
 * Ubuntu 16.04 - Xenial
-* CentOS 8
 * CentOS 7
 * RHEL 8
 
