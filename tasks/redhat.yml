@@ -74,8 +74,8 @@
     mode: 0644
   loop:
     - "{{ { 's': 'commands', 'o': update_strategy_key[dnf_or_yum], 'v': update_strategy } }}"
-    - { 's': 'commands', 'o': 'apply_updates', 'v': 'yes' }
-    - { 's': 'commands', 'o': 'random_sleep', 'v': 360 }
+    - {'s':'commands', 'o':'apply_updates', 'v':'yes'}
+    - {'s':'commands', 'o':'random_sleep', 'v':360}
 
 
 - name: enable/disable dnf-automatic
