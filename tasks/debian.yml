@@ -1,27 +1,27 @@
 # vim: ai et ts=2 st=2 sw=2 :
 ---
-- name: find repositories with key_id
+- name: Find repositories with key_id
   set_fact:
     repo_with_key_url: '{{ packages_ubuntu_repositories | selectattr("key_id", "defined") | selectattr("enabled") | list }}'
 
 # install check mode dependencies
 
-- name: install check mode dependencies python3
+- name: Install check mode dependencies python3
   apt:
     name: python3-apt
     cache_valid_time: 3600
   check_mode: false
-  when: ansible_distribution_version|int > 16
+  when: ansible_distribution_version | int > 16
 
 # add repos
 
-- name: add apt keys
+- name: Add apt keys
   apt_key:
     url: '{{ item.key_url }}'
     id: '{{ item.key_id | default(omit) }}'
   loop: '{{ repo_with_key_url }}'
 
-- name: add repositories
+- name: Add repositories
   apt_repository:
     filename: ansible
     repo: '{{ item.repo }}'
@@ -31,14 +31,14 @@
 
 # unhold packages
 
-- name: hold packages
+- name: Hold packages
   shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
   register: apt_mark_hold
   failed_when: false
   changed_when: apt_mark_hold.rc == 0 and "already" not in apt_mark_hold.stdout
   loop: '{{ packages_ubuntu_hold }}'
 
-- name: unhold packages
+- name: Unhold packages
   shell: 'apt-mark -s unhold {{ item }} && apt-mark unhold {{ item }}'
   register: apt_mark_unhold
   failed_when: false
@@ -47,7 +47,7 @@
 
 # pin packages
 
-- name: pin packages
+- name: Pin packages
   template:
     src: ansible
     dest: /etc/apt/preferences.d/ansible
@@ -55,7 +55,7 @@
 
 # install packages
 
-- name: install apt packages
+- name: Install apt packages
   apt:
     name: '{{ packages_ubuntu_install }}'
     update_cache: true
@@ -63,7 +63,7 @@
 
 # hold packages
 
-- name: hold packages
+- name: Hold packages
   shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
   register: apt_mark_hold
   failed_when: false
@@ -72,19 +72,19 @@
 
 # unattended_upgrades
 
-- name: check if unnatended upgrades file exists
+- name: Check if unnatended upgrades file exists
   stat:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
   register: unattended_file
 
-- name: install unattended upgrades
+- name: Install unattended upgrades
   apt:
     pkg:
       - unattended-upgrades
       - update-notifier-common
   when: packages_unattended_upgrades
 
-- name: uncomment updates
+- name: Uncomment updates
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*updates.*)$'
@@ -94,7 +94,7 @@
     - not packages_only_security_upgrades
     - unattended_file.stat.exists|bool
 
-- name: comment updates
+- name: Comment updates
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*updates.*)$'
@@ -104,7 +104,7 @@
     - packages_only_security_upgrades
     - unattended_file.stat.exists|bool
 
-- name: uncomment backports
+- name: Uncomment backports
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*backports.*)$'
@@ -114,7 +114,7 @@
     - packages_ubuntu_update_backports
     - unattended_file.stat.exists|bool
 
-- name: comment backports
+- name: Comment backports
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*backports.*)$'
@@ -124,7 +124,7 @@
     - not packages_ubuntu_update_backports
     - unattended_file.stat.exists|bool
 
-- name: uncomment automatic reboot
+- name: Uncomment automatic reboot
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(Unattended-Upgrade::Automatic-Reboot.*)$'
@@ -133,7 +133,7 @@
   when:
     - unattended_file.stat.exists|bool
 
-- name: enable or disable automatic reboot
+- name: Enable or disable automatic reboot
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^(U.*Automatic-Reboot.*")(true|false)(".*)$'
@@ -142,11 +142,11 @@
   when:
     - unattended_file.stat.exists|bool
 
-- name: set reboot time
+- name: Set reboot time
   replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '(.*Automatic-Reboot-Time.*)"..\:.."(.*)$'
-    replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour|int) }}:{{ "%02d" | format(packages_automatic_reboot_minute|int) }}"\2'
+    replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour | int) }}:{{ "%02d" | format(packages_automatic_reboot_minute | int) }}"\2'
     mode: 0644
   when:
     - unattended_file.stat.exists|bool

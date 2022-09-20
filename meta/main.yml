@@ -6,24 +6,23 @@ galaxy_info:
   company: MET Norway
   role_name: packages
   namespace: met
+  standalone: true
 
   license: GPLv2
 
-  min_ansible_version: 2.8
+  min_ansible_version: "2.8"
 
   platforms:
-    - name: CentOS
+    - name: "EL"
       versions:
-        - 7
-    - name: Ubuntu
+        - "7"
+        - "8"
+    - name: "Ubuntu"
       versions:
-        - 22.04
-        - 20.04
-        - 18.04
-        - 16.04
-    - name: RedHat
-      versions:
-        - 8
+        - "jammy"
+        - "focal"
+        - "bionic"
+        - "xenial"
 
   galaxy_tags:
     - apt
