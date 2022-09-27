@@ -30,4 +30,7 @@ galaxy_info:
     - dnf
     - packages
 
+collections:
+  - community.general
+
 dependencies: []

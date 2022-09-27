@@ -1,13 +1,13 @@
 # vim: ai et ts=2 st=2 sw=2 :
 ---
 - name: Is dnf or not
-  set_fact:
+  ansible.builtin.set_fact:
     is_dnf: '{{ ansible_distribution_major_version | int > 7 }}'
 
 # add repos
 
 - name: Add repositories
-  yum_repository:
+  ansible.builtin.yum_repository:
     file: ansible
     name: '{{ item.name }}'
     description: '{{ item.description }}'
@@ -19,7 +19,7 @@
 # exclude packages
 
 - name: Exclude yum packages
-  ini_file:
+  community.general.ini_file:
     path: /etc/yum.conf
     section: main
     option: exclude
@@ -28,7 +28,7 @@
   when: not is_dnf
 
 - name: Exclude dnf packages
-  ini_file:
+  community.general.ini_file:
     path: /etc/dnf/dnf.conf
     section: main
     option: exclude
@@ -39,19 +39,19 @@
 # install packges
 
 - name: Install yum packages
-  yum:
+  ansible.builtin.yum:
     name: '{{ packages_centos_install }}'
   when: not is_dnf
 
 - name: Install dnf packages
-  dnf:
+  ansible.builtin.dnf:
     name: '{{ packages_centos_install }}'
   when: is_dnf
 
 # unattended_upgrades
 
 - name: Set config options for automatic update
-  set_fact:
+  ansible.builtin.set_fact:
     config_file:
       dnf: /etc/dnf/automatic.conf
       yum: /etc/yum/yum-cron.conf
@@ -62,11 +62,11 @@
     dnf_or_yum: '{{ "dnf" if is_dnf else "yum" }}'
 
 - name: Install dnf-automatic or yum-cron
-  package:
+  ansible.builtin.package:
     name: '{{ "dnf-automatic" if is_dnf else "yum-cron" }}'
 
 - name: Update configuration
-  ini_file:
+  community.general.ini_file:
     path: '{{ config_file[dnf_or_yum] }}'
     section: '{{ item.s }}'
     option: '{{ item.o }}'
@@ -79,21 +79,25 @@
 
 
 - name: Enable/disable dnf-automatic
-  systemd:
+  ansible.builtin.systemd:
     name: dnf-automatic.timer
     state: '{{ "started" if packages_unattended_upgrades else "stopped" }}'
     enabled: '{{ "true" if packages_unattended_upgrades else "false" }}'
-  when: is_dnf
+  when:
+    - is_dnf
+    - not ansible_check_mode
 
 - name: Enable/disable yum-cron
-  service:
+  ansible.builtin.service:
     name: yum-cron
     state: '{{ "started" if packages_unattended_upgrades else "stopped" }}'
     enabled: '{{ "true" if packages_unattended_upgrades else "false" }}'
-  when: not is_dnf
+  when:
+    - not is_dnf
+    - not ansible_check_mode
 
 - name: Add cronjob for reboot on centos 7 and up
-  cron:
+  ansible.builtin.cron:
     name: automatic reboot after kernel upgrade and so on
     hour: '{{ packages_automatic_reboot_hour | string }}'
     minute: '{{ packages_automatic_reboot_minute | string }}'

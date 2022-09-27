@@ -1,13 +1,13 @@
 # vim: ai et ts=2 st=2 sw=2 :
 ---
 - name: Find repositories with key_id
-  set_fact:
+  ansible.builtin.set_fact:
     repo_with_key_url: '{{ packages_ubuntu_repositories | selectattr("key_id", "defined") | selectattr("enabled") | list }}'
 
 # install check mode dependencies
 
 - name: Install check mode dependencies python3
-  apt:
+  ansible.builtin.apt:
     name: python3-apt
     cache_valid_time: 3600
   check_mode: false
@@ -16,13 +16,13 @@
 # add repos
 
 - name: Add apt keys
-  apt_key:
+  ansible.builtin.apt_key:
     url: '{{ item.key_url }}'
     id: '{{ item.key_id | default(omit) }}'
   loop: '{{ repo_with_key_url }}'
 
 - name: Add repositories
-  apt_repository:
+  ansible.builtin.apt_repository:
     filename: ansible
     repo: '{{ item.repo }}'
     state: '{{ "present" if item.enabled | bool else "absent" }}'
@@ -32,14 +32,14 @@
 # unhold packages
 
 - name: Hold packages
-  shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
+  ansible.builtin.shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
   register: apt_mark_hold
   failed_when: false
   changed_when: apt_mark_hold.rc == 0 and "already" not in apt_mark_hold.stdout
   loop: '{{ packages_ubuntu_hold }}'
 
 - name: Unhold packages
-  shell: 'apt-mark -s unhold {{ item }} && apt-mark unhold {{ item }}'
+  ansible.builtin.shell: 'apt-mark -s unhold {{ item }} && apt-mark unhold {{ item }}'
   register: apt_mark_unhold
   failed_when: false
   changed_when: apt_mark_unhold.rc == 0 and "already" not in apt_mark_unhold.stdout
@@ -48,7 +48,7 @@
 # pin packages
 
 - name: Pin packages
-  template:
+  ansible.builtin.template:
     src: ansible
     dest: /etc/apt/preferences.d/ansible
     mode: 0644
@@ -56,7 +56,7 @@
 # install packages
 
 - name: Install apt packages
-  apt:
+  ansible.builtin.apt:
     name: '{{ packages_ubuntu_install }}'
     update_cache: true
     cache_valid_time: 3600
@@ -64,7 +64,7 @@
 # hold packages
 
 - name: Hold packages
-  shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
+  ansible.builtin.shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
   register: apt_mark_hold
   failed_when: false
   changed_when: apt_mark_hold.rc == 0 and "already" not in apt_mark_hold.stdout
@@ -73,19 +73,19 @@
 # unattended_upgrades
 
 - name: Check if unnatended upgrades file exists
-  stat:
+  ansible.builtin.stat:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
   register: unattended_file
 
 - name: Install unattended upgrades
-  apt:
+  ansible.builtin.apt:
     pkg:
       - unattended-upgrades
       - update-notifier-common
   when: packages_unattended_upgrades
 
 - name: Uncomment updates
-  replace:
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*updates.*)$'
     replace: '\1'
@@ -95,7 +95,7 @@
     - unattended_file.stat.exists|bool
 
 - name: Comment updates
-  replace:
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*updates.*)$'
     replace: '//\1'
@@ -105,7 +105,7 @@
     - unattended_file.stat.exists|bool
 
 - name: Uncomment backports
-  replace:
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*backports.*)$'
     replace: '\1'
@@ -115,7 +115,7 @@
     - unattended_file.stat.exists|bool
 
 - name: Comment backports
-  replace:
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*backports.*)$'
     replace: '//\1'
@@ -125,7 +125,7 @@
     - unattended_file.stat.exists|bool
 
 - name: Uncomment automatic reboot
-  replace:
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(Unattended-Upgrade::Automatic-Reboot.*)$'
     replace: '\1'
@@ -134,7 +134,7 @@
     - unattended_file.stat.exists|bool
 
 - name: Enable or disable automatic reboot
-  replace:
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^(U.*Automatic-Reboot.*")(true|false)(".*)$'
     replace: '\1{{ packages_automatic_reboot | string | lower }}\3'
@@ -143,7 +143,7 @@
     - unattended_file.stat.exists|bool
 
 - name: Set reboot time
-  replace:
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '(.*Automatic-Reboot-Time.*)"..\:.."(.*)$'
     replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour | int) }}:{{ "%02d" | format(packages_automatic_reboot_minute | int) }}"\2'
