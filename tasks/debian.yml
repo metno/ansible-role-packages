@@ -31,13 +31,6 @@
 
 # unhold packages
 
-- name: Hold packages
-  ansible.builtin.shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
-  register: apt_mark_hold
-  failed_when: false
-  changed_when: apt_mark_hold.rc == 0 and "already" not in apt_mark_hold.stdout
-  loop: '{{ packages_ubuntu_hold }}'
-
 - name: Unhold packages
   ansible.builtin.shell: 'apt-mark -s unhold {{ item }} && apt-mark unhold {{ item }}'
   register: apt_mark_unhold
