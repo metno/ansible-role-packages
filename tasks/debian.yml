@@ -15,11 +15,20 @@
 
 # add repos
 
-- name: Add apt keys
+- name: Add apt keys for focal and older
   ansible.builtin.apt_key:
     url: '{{ item.key_url }}'
     id: '{{ item.key_id | default(omit) }}'
   loop: '{{ repo_with_key_url }}'
+  when: ansible_distribution_version | int <= 20
+
+- name: Add apt keys for ubuntu jammy and newer
+  ansible.builtin.apt_key:
+    url: '{{ item.key_url }}'
+    id: '{{ item.key_id | default(omit) }}'
+    keyring: /etc/apt/trusted.gpg.d/ansible-managed.gpg
+  loop: '{{ repo_with_key_url }}'
+  when: ansible_distribution_version | int > 20
 
 - name: Add repositories
   ansible.builtin.apt_repository:
