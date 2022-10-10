@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `2.5.0` --- added support for RHEL9 and CentOS Stream 8
 * `2.4.0` --- Added Jammy and removed centos8 support
 * `2.3.1` --- fixed missing support for packages_unattended_upgrades for redhat family
 * `2.3.0` --- add rhel8 support + remove trusty
@@ -33,7 +34,9 @@ This role is limited to
 * Ubuntu 18.04 - Bionic
 * Ubuntu 16.04 - Xenial
 * CentOS 7
+* CentOS Stream 8
 * RHEL 8
+* RHEL 9
 
 Role Variables
 --------------
