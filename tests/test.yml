@@ -50,10 +50,3 @@
         - rsyslog
       packages_services_disabled:
         - rsyslog
-
-
-#  tasks:
-#    - name: test install of kubectl on all except precise
-#      package:
-#        name: kubectl
-#      when: ansible_distribution_release != "precise"
