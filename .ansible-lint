@@ -2,3 +2,4 @@ skip_list:
   - '204'
   - no-handler
   - fqcn-builtins
+  - deprecated-module
