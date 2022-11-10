@@ -6,13 +6,14 @@ galaxy_info:
   company: MET Norway
   role_name: packages
   namespace: met
+  standalone: true
 
   license: GPLv2
 
-  min_ansible_version: 2.8
+  min_ansible_version: "2.12"
 
   platforms:
-    - name: CentOS
+    - name: "EL"
       versions:
         - 7
         - 8
@@ -21,7 +22,6 @@ galaxy_info:
         - 22.04
         - 20.04
         - 18.04
-        - 16.04
     - name: RedHat
       versions:
         - 8
@@ -32,5 +32,8 @@ galaxy_info:
     - yum
     - dnf
     - packages
+
+collections:
+  - community.general
 
 dependencies: []

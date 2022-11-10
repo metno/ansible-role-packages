@@ -1,13 +1,13 @@
 # vim: ai et ts=2 st=2 sw=2 :
 ---
-- name: is dnf or not
-  set_fact:
+- name: Is dnf or not
+  ansible.builtin.set_fact:
     is_dnf: '{{ ansible_distribution_major_version | int > 7 }}'
 
 # add repos
 
-- name: add repositories
-  yum_repository:
+- name: Add repositories
+  ansible.builtin.yum_repository:
     file: ansible
     name: '{{ item.name }}'
     description: '{{ item.description }}'
@@ -18,86 +18,90 @@
 
 # exclude packages
 
-- name: exclude yum packages
-  ini_file:
+- name: Exclude yum packages
+  community.general.ini_file:
     path: /etc/yum.conf
     section: main
     option: exclude
-    value: '{{ packages_centos_exclude | join(" ")  }}'
+    value: '{{ packages_centos_exclude | join(" ") }}'
     mode: 0644
   when: not is_dnf
 
-- name: exclude dnf packages
-  ini_file:
+- name: Exclude dnf packages
+  community.general.ini_file:
     path: /etc/dnf/dnf.conf
     section: main
     option: exclude
-    value: '{{ packages_centos_exclude | join(" ")  }}'
+    value: '{{ packages_centos_exclude | join(" ") }}'
     mode: 0644
   when: is_dnf
 
 # install packges
 
-- name: install yum packages
-  yum:
+- name: Install yum packages
+  ansible.builtin.yum:
     name: '{{ packages_centos_install }}'
   when: not is_dnf
 
-- name: install dnf packages
-  dnf:
+- name: Install dnf packages
+  ansible.builtin.dnf:
     name: '{{ packages_centos_install }}'
   when: is_dnf
 
 # unattended_upgrades
 
-- name: set config options for automatic update
-  set_fact:
+- name: Set config options for automatic update
+  ansible.builtin.set_fact:
     config_file:
       dnf: /etc/dnf/automatic.conf
       yum: /etc/yum/yum-cron.conf
     update_strategy_key:
       dnf: upgrade_type
       yum: update_cmd
-    update_strategy: '{{ "security" if packages_only_security_upgrades else "default"  }}'
+    update_strategy: '{{ "security" if packages_only_security_upgrades else "default" }}'
     dnf_or_yum: '{{ "dnf" if is_dnf else "yum" }}'
 
-- name: install dnf-automatic or yum-cron
-  package:
+- name: Install dnf-automatic or yum-cron
+  ansible.builtin.package:
     name: '{{ "dnf-automatic" if is_dnf else "yum-cron" }}'
 
-- name: update configuration
-  ini_file:
-    path: '{{ config_file[ dnf_or_yum ] }}'
+- name: Update configuration
+  community.general.ini_file:
+    path: '{{ config_file[dnf_or_yum] }}'
     section: '{{ item.s }}'
     option: '{{ item.o }}'
     value: '{{ item.v }}'
     mode: 0644
   loop:
-    - "{{ { 's': 'commands', 'o': update_strategy_key[dnf_or_yum], 'v': update_strategy } }}"
+    - "{{ {'s': 'commands', 'o': update_strategy_key[dnf_or_yum], 'v': update_strategy} }}"
     - {'s':'commands', 'o':'apply_updates', 'v':'yes'}
     - {'s':'commands', 'o':'random_sleep', 'v':360}
 
 
-- name: enable/disable dnf-automatic
-  systemd:
+- name: Enable/disable dnf-automatic
+  ansible.builtin.systemd:
     name: dnf-automatic.timer
     state: '{{ "started" if packages_unattended_upgrades else "stopped" }}'
     enabled: '{{ "true" if packages_unattended_upgrades else "false" }}'
-  when: is_dnf
+  when:
+    - is_dnf
+    - not ansible_check_mode
 
-- name: enable/disable yum-cron
-  service:
+- name: Enable/disable yum-cron
+  ansible.builtin.service:
     name: yum-cron
     state: '{{ "started" if packages_unattended_upgrades else "stopped" }}'
     enabled: '{{ "true" if packages_unattended_upgrades else "false" }}'
-  when: not is_dnf
+  when:
+    - not is_dnf
+    - not ansible_check_mode
 
-- name: add cronjob for reboot on centos 7 and up
-  cron:
+- name: Add cronjob for reboot on centos 7 and up
+  ansible.builtin.cron:
     name: automatic reboot after kernel upgrade and so on
-    hour: '{{ packages_automatic_reboot_hour|string }}'
-    minute: '{{ packages_automatic_reboot_minute|string }}'
+    hour: '{{ packages_automatic_reboot_hour | string }}'
+    minute: '{{ packages_automatic_reboot_minute | string }}'
     job: |
       needs-restarting -r &> /dev/null || shutdown -r 1
     state: '{{ "present" if packages_automatic_reboot else "absent" }}'
-  when: ansible_distribution_major_version|int > 6
+  when: ansible_distribution_major_version | int > 6

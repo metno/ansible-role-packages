@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `3.0.0` --- role requires Ansible 2.12 or newer
 * `2.5.0` --- added support for RHEL9 and CentOS Stream 8
 * `2.4.0` --- Added Jammy and removed centos8 support
 * `2.3.1` --- fixed missing support for packages_unattended_upgrades for redhat family
@@ -32,7 +33,6 @@ This role is limited to
 * Ubuntu 22.04 - Jammy
 * Ubuntu 20.04 - Focal
 * Ubuntu 18.04 - Bionic
-* Ubuntu 16.04 - Xenial
 * CentOS 7
 * CentOS Stream 8
 * RHEL 8

@@ -1,28 +1,37 @@
 # vim: ai et ts=2 st=2 sw=2 :
 ---
-- name: find repositories with key_id
-  set_fact:
+- name: Find repositories with key_id
+  ansible.builtin.set_fact:
     repo_with_key_url: '{{ packages_ubuntu_repositories | selectattr("key_id", "defined") | selectattr("enabled") | list }}'
 
 # install check mode dependencies
 
-- name: install check mode dependencies python3
-  apt:
+- name: Install check mode dependencies python3
+  ansible.builtin.apt:
     name: python3-apt
     cache_valid_time: 3600
   check_mode: false
-  when: ansible_distribution_version|int > 16
+  when: ansible_distribution_version | int > 16
 
 # add repos
 
-- name: add apt keys
-  apt_key:
+- name: Add apt keys for focal and older
+  ansible.builtin.apt_key:
     url: '{{ item.key_url }}'
     id: '{{ item.key_id | default(omit) }}'
   loop: '{{ repo_with_key_url }}'
+  when: ansible_distribution_version | int <= 20
 
-- name: add repositories
-  apt_repository:
+- name: Add apt keys for ubuntu jammy and newer
+  ansible.builtin.apt_key:
+    url: '{{ item.key_url }}'
+    id: '{{ item.key_id | default(omit) }}'
+    keyring: /etc/apt/trusted.gpg.d/ansible-managed.gpg
+  loop: '{{ repo_with_key_url }}'
+  when: ansible_distribution_version | int > 20
+
+- name: Add repositories
+  ansible.builtin.apt_repository:
     filename: ansible
     repo: '{{ item.repo }}'
     state: '{{ "present" if item.enabled | bool else "absent" }}'
@@ -31,15 +40,8 @@
 
 # unhold packages
 
-- name: hold packages
-  shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
-  register: apt_mark_hold
-  failed_when: false
-  changed_when: apt_mark_hold.rc == 0 and "already" not in apt_mark_hold.stdout
-  loop: '{{ packages_ubuntu_hold }}'
-
-- name: unhold packages
-  shell: 'apt-mark -s unhold {{ item }} && apt-mark unhold {{ item }}'
+- name: Unhold packages
+  ansible.builtin.shell: 'apt-mark -s unhold {{ item }} && apt-mark unhold {{ item }}'
   register: apt_mark_unhold
   failed_when: false
   changed_when: apt_mark_unhold.rc == 0 and "already" not in apt_mark_unhold.stdout
@@ -47,24 +49,24 @@
 
 # pin packages
 
-- name: pin packages
-  template:
+- name: Pin packages
+  ansible.builtin.template:
     src: ansible
     dest: /etc/apt/preferences.d/ansible
     mode: 0644
 
 # install packages
 
-- name: install apt packages
-  apt:
+- name: Install apt packages
+  ansible.builtin.apt:
     name: '{{ packages_ubuntu_install }}'
     update_cache: true
     cache_valid_time: 3600
 
 # hold packages
 
-- name: hold packages
-  shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
+- name: Hold packages
+  ansible.builtin.shell: 'apt-mark -s hold {{ item }} && apt-mark hold {{ item }}'
   register: apt_mark_hold
   failed_when: false
   changed_when: apt_mark_hold.rc == 0 and "already" not in apt_mark_hold.stdout
@@ -72,20 +74,20 @@
 
 # unattended_upgrades
 
-- name: check if unnatended upgrades file exists
-  stat:
+- name: Check if unnatended upgrades file exists
+  ansible.builtin.stat:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
   register: unattended_file
 
-- name: install unattended upgrades
-  apt:
+- name: Install unattended upgrades
+  ansible.builtin.apt:
     pkg:
       - unattended-upgrades
       - update-notifier-common
   when: packages_unattended_upgrades
 
-- name: uncomment updates
-  replace:
+- name: Uncomment updates
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*updates.*)$'
     replace: '\1'
@@ -94,8 +96,8 @@
     - not packages_only_security_upgrades
     - unattended_file.stat.exists|bool
 
-- name: comment updates
-  replace:
+- name: Comment updates
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*updates.*)$'
     replace: '//\1'
@@ -104,8 +106,8 @@
     - packages_only_security_upgrades
     - unattended_file.stat.exists|bool
 
-- name: uncomment backports
-  replace:
+- name: Uncomment backports
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*backports.*)$'
     replace: '\1'
@@ -114,8 +116,8 @@
     - packages_ubuntu_update_backports
     - unattended_file.stat.exists|bool
 
-- name: comment backports
-  replace:
+- name: Comment backports
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*backports.*)$'
     replace: '//\1'
@@ -124,8 +126,8 @@
     - not packages_ubuntu_update_backports
     - unattended_file.stat.exists|bool
 
-- name: uncomment automatic reboot
-  replace:
+- name: Uncomment automatic reboot
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(Unattended-Upgrade::Automatic-Reboot.*)$'
     replace: '\1'
@@ -133,8 +135,8 @@
   when:
     - unattended_file.stat.exists|bool
 
-- name: enable or disable automatic reboot
-  replace:
+- name: Enable or disable automatic reboot
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^(U.*Automatic-Reboot.*")(true|false)(".*)$'
     replace: '\1{{ packages_automatic_reboot | string | lower }}\3'
@@ -142,11 +144,11 @@
   when:
     - unattended_file.stat.exists|bool
 
-- name: set reboot time
-  replace:
+- name: Set reboot time
+  ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '(.*Automatic-Reboot-Time.*)"..\:.."(.*)$'
-    replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour|int) }}:{{ "%02d" | format(packages_automatic_reboot_minute|int) }}"\2'
+    replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour | int) }}:{{ "%02d" | format(packages_automatic_reboot_minute | int) }}"\2'
     mode: 0644
   when:
     - unattended_file.stat.exists|bool
