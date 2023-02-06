@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `3.0.1` --- bug fix
 * `3.0.0` --- role requires Ansible 2.12 or newer
 * `2.5.0` --- added support for RHEL9 and CentOS Stream 8
 * `2.4.0` --- Added Jammy and removed centos8 support
