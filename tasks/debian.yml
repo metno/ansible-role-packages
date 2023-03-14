@@ -53,7 +53,7 @@
   ansible.builtin.template:
     src: ansible
     dest: /etc/apt/preferences.d/ansible
-    mode: 0644
+    mode: '0644'
 
 # install packages
 
@@ -91,7 +91,7 @@
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*updates.*)$'
     replace: '\1'
-    mode: 0644
+    mode: '0644'
   when:
     - not packages_only_security_upgrades
     - unattended_file.stat.exists|bool
@@ -101,7 +101,7 @@
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*updates.*)$'
     replace: '//\1'
-    mode: 0644
+    mode: '0644'
   when:
     - packages_only_security_upgrades
     - unattended_file.stat.exists|bool
@@ -111,7 +111,7 @@
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(.*distro_codename.*backports.*)$'
     replace: '\1'
-    mode: 0644
+    mode: '0644'
   when:
     - packages_ubuntu_update_backports
     - unattended_file.stat.exists|bool
@@ -121,7 +121,7 @@
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^[^/](.*distro_codename.*backports.*)$'
     replace: '//\1'
-    mode: 0644
+    mode: '0644'
   when:
     - not packages_ubuntu_update_backports
     - unattended_file.stat.exists|bool
@@ -131,7 +131,7 @@
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//(Unattended-Upgrade::Automatic-Reboot.*)$'
     replace: '\1'
-    mode: 0644
+    mode: '0644'
   when:
     - unattended_file.stat.exists|bool
 
@@ -140,7 +140,7 @@
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^(U.*Automatic-Reboot.*")(true|false)(".*)$'
     replace: '\1{{ packages_automatic_reboot | string | lower }}\3'
-    mode: 0644
+    mode: '0644'
   when:
     - unattended_file.stat.exists|bool
 
@@ -149,6 +149,6 @@
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '(.*Automatic-Reboot-Time.*)"..\:.."(.*)$'
     replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour | int) }}:{{ "%02d" | format(packages_automatic_reboot_minute | int) }}"\2'
-    mode: 0644
+    mode: '0644'
   when:
     - unattended_file.stat.exists|bool

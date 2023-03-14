@@ -24,7 +24,7 @@
     section: main
     option: exclude
     value: '{{ packages_centos_exclude | join(" ") }}'
-    mode: 0644
+    mode: '0644'
   when: not is_dnf
 
 - name: Exclude dnf packages
@@ -33,7 +33,7 @@
     section: main
     option: exclude
     value: '{{ packages_centos_exclude | join(" ") }}'
-    mode: 0644
+    mode: '0644'
   when: is_dnf
 
 # install packges
@@ -71,7 +71,7 @@
     section: '{{ item.s }}'
     option: '{{ item.o }}'
     value: '{{ item.v }}'
-    mode: 0644
+    mode: '0644'
   loop:
     - "{{ {'s': 'commands', 'o': update_strategy_key[dnf_or_yum], 'v': update_strategy} }}"
     - {'s':'commands', 'o':'apply_updates', 'v':'yes'}
