@@ -13,7 +13,7 @@
 # Configure repos before installing packages
 
 - name: Include os specific config
-  ansible.builtin.include: '{{ ansible_os_family | lower }}.yml'
+  ansible.builtin.include_tasks: '{{ ansible_os_family | lower }}.yml'
 
 - name: Install packages on both systems
   ansible.builtin.package:
