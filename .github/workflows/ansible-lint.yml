@@ -1,20 +1,20 @@
+---
 name: Ansible Lint
-
-on: [push, pull_request]
+on: [push, pull_request] # noqa yaml[truthy]
 
 jobs:
   build:
-
+    name: Ansible Lint
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Lint Ansible Playbook
-      uses: ansible/ansible-lint-action@main
-      with:
-        targets: ""
-        #override-deps: |
-        #  ansible==2.9
-        #  ansible-lint==4.2.0
-        args: ""
+      - name: Lint Ansible Playbook
+        uses: ansible/ansible-lint-action@main
+        with:
+          targets: ""
+          override-deps: |
+            ansible-lint<6.14.0
+          #  ansible==2.9
+          args: ""
