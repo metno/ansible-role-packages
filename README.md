@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `3.1.1` --- Fix meta/main.yml info
 * `3.1.0` --- added support for Ubuntu 24.04
 * `3.0.2` --- bug fix, ansible-lint
 * `3.0.1` --- bug fix
