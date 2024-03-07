@@ -5,8 +5,7 @@ galaxy_info:
   description: Install packages, repositories and pinning.
   company: MET Norway
   role_name: packages
-  namespace: met
-  standalone: true
+  namespace: metno
 
   license: GPLv2
 
