@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `3.1.0` --- added support for Ubuntu 24.04
 * `3.0.2` --- bug fix, ansible-lint
 * `3.0.1` --- bug fix
 * `3.0.0` --- role requires Ansible 2.12 or newer
@@ -32,6 +33,7 @@ Requirements
 
 This role is limited to
 
+* Ubuntu 24.04 - Noble
 * Ubuntu 22.04 - Jammy
 * Ubuntu 20.04 - Focal
 * Ubuntu 18.04 - Bionic
