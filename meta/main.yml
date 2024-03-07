@@ -14,6 +14,7 @@ galaxy_info:
   platforms:
     - name: "Ubuntu"
       versions:
+        - "noble"
         - "jammy"
         - "focal"
         - "bionic"
