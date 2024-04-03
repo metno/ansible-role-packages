@@ -42,6 +42,10 @@ This role is limited to
 * CentOS Stream 8
 * RHEL 8
 * RHEL 9
+* Rocky Linux 8
+* Rocky Linux 9
+* AlmaLinux 8
+* AlmaLinux 9
 
 Role Variables
 --------------
