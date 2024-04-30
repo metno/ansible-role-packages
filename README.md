@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `4.0.0` --- Updated for ansible-core 2.16. Removed support for Ubuntu Bionic.
 * `3.1.1` --- Fix meta/main.yml info
 * `3.1.0` --- added support for Ubuntu 24.04
 * `3.0.2` --- bug fix, ansible-lint
@@ -37,7 +38,6 @@ This role is limited to
 * Ubuntu 24.04 - Noble
 * Ubuntu 22.04 - Jammy
 * Ubuntu 20.04 - Focal
-* Ubuntu 18.04 - Bionic
 * CentOS 7
 * CentOS Stream 8
 * RHEL 8
@@ -177,7 +177,9 @@ GPLv2
 Author Information
 ------------------
 
-Created 2020 by [Arnulf Heimsbakk](mailto:arnulf.heimsbakk@met.no) for MET Norway.
+Created 2020 by IT Infrastructure at MET Norway
+
+Contactpoint: [IT Infrastructure Basis Team](mailto:it-is-basis@met.no)
 
 ### References
 
