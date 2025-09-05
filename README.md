@@ -139,25 +139,26 @@ Example Playbook
 Testing
 -------
 
-To test RHEL8 with vagrant, install `vagrant-register`
+Testing is done using Ansible Molecule. It uses Vagrant with libvirt as backend.
+
+To run full test run:
 
 ```bash
-vagrant plugin install vagrant-registration
+molecule test
 ```
 
-### Test environment for all OSes
+To run test step by step run:
 
 ```bash
-cd tests
-vagrant up
+molecule create
+molecule converge
+molecule verify
+molecule destroy
 ```
 
-### Rerun role
-
-Run role on all OSes again.
-
-```bash
-vagrant provision
+To run toward specific scenario use `-s` option.
+```
+molecule test -s ubuntu
 ```
 
 ### Debug interactively
