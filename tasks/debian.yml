@@ -92,6 +92,9 @@
     regexp: '^//(.*distro_codename.*updates.*)$'
     replace: '\1'
     mode: '0644'
+  retries: 5
+  delay: 5
+  until: unattended_file.stat.exists
   when:
     - not packages_only_security_upgrades
     - unattended_file.stat.exists|bool
@@ -102,6 +105,9 @@
     regexp: '^[^/](.*distro_codename.*updates.*)$'
     replace: '//\1'
     mode: '0644'
+  retries: 5
+  delay: 5
+  until: unattended_file.stat.exists
   when:
     - packages_only_security_upgrades
     - unattended_file.stat.exists|bool
@@ -112,6 +118,9 @@
     regexp: '^//(.*distro_codename.*backports.*)$'
     replace: '\1'
     mode: '0644'
+  retries: 5
+  delay: 5
+  until: unattended_file.stat.exists
   when:
     - packages_ubuntu_update_backports
     - unattended_file.stat.exists|bool
@@ -122,6 +131,9 @@
     regexp: '^[^/](.*distro_codename.*backports.*)$'
     replace: '//\1'
     mode: '0644'
+  retries: 5
+  delay: 5
+  until: unattended_file.stat.exists
   when:
     - not packages_ubuntu_update_backports
     - unattended_file.stat.exists|bool
@@ -132,8 +144,12 @@
     regexp: '^//(Unattended-Upgrade::Automatic-Reboot.*)$'
     replace: '\1'
     mode: '0644'
+  retries: 5
+  delay: 5
+  until: unattended_file.stat.exists
   when:
     - unattended_file.stat.exists|bool
+    - packages_automatic_reboot
 
 - name: Enable or disable automatic reboot
   ansible.builtin.replace:
@@ -141,8 +157,13 @@
     regexp: '^(U.*Automatic-Reboot.*")(true|false)(".*)$'
     replace: '\1{{ packages_automatic_reboot | string | lower }}\3'
     mode: '0644'
+  retries: 5
+  delay: 5
+  until: unattended_file.stat.exists
   when:
     - unattended_file.stat.exists|bool
+    - packages_automatic_reboot
+
 
 - name: Set reboot time
   ansible.builtin.replace:
@@ -150,5 +171,9 @@
     regexp: '(.*Automatic-Reboot-Time.*)"..\:.."(.*)$'
     replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour | int) }}:{{ "%02d" | format(packages_automatic_reboot_minute | int) }}"\2'
     mode: '0644'
+  retries: 5
+  delay: 5
+  until: unattended_file.stat.exists
   when:
     - unattended_file.stat.exists|bool
+    - packages_automatic_reboot

@@ -1,0 +1,138 @@
+- name: Verify
+  become: true
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+### RedHat Testing
+    - name: Testing RedHat
+      when: ansible_os_family | lower == "redhat"
+      block:
+        - name: Assert that httpd is installed
+          ansible.builtin.assert:
+            that: "'httpd' in ansible_facts.packages"
+            fail_msg: "The package 'httpd' is NOT installed!"
+            success_msg: "The package 'httpd' is installed."
+
+        - name: Assert that packer is installed
+          ansible.builtin.assert:
+            that: "'packer' in ansible_facts.packages"
+            fail_msg: "The package 'packer' is NOT installed!"
+            success_msg: "The package 'packer' is installed."
+          when:
+            - ansible_distribution|lower != "centos"
+
+        - name: Check if hashicorp repository is installed
+          shell: "grep -R 'https://rpm.releases.hashicorp.com' /etc/yum.repos.d/*.repo"
+          register: epel_repo_check
+          ignore_errors: true
+          when:
+            - ansible_distribution | lower != "centos"
+
+        - name: Assert the hashicorp repository is installed
+          assert:
+            that:
+              - "epel_repo_check.rc == 0"
+            fail_msg: "HashiCorp repository is missing."
+            success_msg: "HashiCorp repository is installed."
+          when:
+            - ansible_distribution | lower != "centos"
+
+        - name: Check if exclude directive exists in dnf.conf
+          ansible.builtin.shell: "grep '^exclude' /etc/dnf/dnf.conf || true"
+          register: dnf_exclude
+          failed_when: false  # Avoid failing if the file doesn't exist
+          when:
+            - ansible_distribution | lower != "centos"
+
+        - name: Check if exclude directive exists in yum.conf
+          ansible.builtin.shell: "grep '^exclude' /etc/yum.conf || true"
+          register: yum_exclude
+          failed_when: false  # Avoid failing if the file doesn't exist
+          when:
+            - ansible_distribution | lower == "centos"
+
+        - name: Assert the package is excluded in yum.conf
+          ansible.builtin.assert:
+            that:
+              - "'emacs' in yum_exclude.stdout"
+            fail_msg: "Package 'emacs' is not excluded in /etc/yum.conf"
+            success_msg: "Package 'emacs' is correctly excluded in configuration files."
+          when:
+            - ansible_distribution | lower == "centos"
+
+        - name: Assert the package is excluded in dnf.conf or yum.conf
+          ansible.builtin.assert:
+            that:
+              - "'emacs' in dnf_exclude.stdout"
+            fail_msg: "Package 'emacs' is not excluded in /etc/dnf/dnf.conf"
+            success_msg: "Package 'emacs' is correctly excluded in configuration files."
+          when:
+            - ansible_distribution | lower != "centos"
+
+##### Ubuntu Testing
+
+    - name: Testing Ubuntu
+      when: ansible_distribution | lower == "ubuntu"
+      block:
+        - name: Assert that apache2 is installed
+          ansible.builtin.assert:
+            that: "'apache2' in ansible_facts.packages"
+            fail_msg: "The package 'apache' is NOT installed!"
+            success_msg: "The package 'apache2' is installed."
+
+        - name: Check if hashicorp repository is installed
+          shell: "grep -R 'https://apt.releases.hashicorp.com' /etc/apt/sources.list /etc/apt/sources.list.d/"
+          register: repo_check
+          ignore_errors: true
+
+        - name: Assert the hashicorp repository is installed
+          assert:
+            that:
+              - "repo_check.rc == 0"
+            fail_msg: "The repository is missing."
+            success_msg: "The repository is installed."
+
+        - name: Test Ubuntu Pin
+          slurp:
+            path: /etc/apt/preferences.d/ansible
+          register: file_data
+          ignore_errors: true
+
+        - name: Check if packer is held
+          shell: "dpkg --get-selections | grep '^packer' | grep 'hold'"
+          register: held_status
+          changed_when: false
+          failed_when: false  # Ensure the task doesn't fail even if the package is not found or not held
+
+        - name: Assert the package is held
+          assert:
+            that:
+              - held_status.stdout != ""
+            fail_msg: "The package packer is NOT held."
+            success_msg: "The package packer is held."
+
+        - name: Assert that the file exists and contains the expected word
+          assert:
+            that:
+              - file_data is defined
+              - file_data is not failed
+              - "'apache2' in (file_data.content | b64decode)"
+            fail_msg: "Check failed, apache2 not pinned"
+            success_msg: "/etc/apt/preferences.d/ansible exists, and contains apache2"
+
+        - name: Read the file content
+          slurp:
+            path: /etc/apt/apt.conf.d/50unattended-upgrades
+          register: unattended_upgrades
+
+        - name: Assert that the desired line exists
+          assert:
+            that:
+              - "'${distro_id}:${distro_codename}-backports' in (unattended_upgrades['content'] | b64decode)"
+            fail_msg: "The line 'desired_line_content' does not exist in /etc/apt/apt.conf.d/50unattended-upgrades"
+            success_msg: "The line 'desired_line_content' exists in /etc/apt/apt.conf.d/50unattended-upgrades"
