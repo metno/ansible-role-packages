@@ -21,6 +21,8 @@ packages_centos_exclude:
 packages_only_security_upgrades: false
 packages_ubuntu_update_backports: true
 packages_automatic_reboot: true
+packages_automatic_reboot_hour: 7
+packages_automatic_reboot_minute: 30
 packages_services_enabled:
   - rsyslog
 packages_services_disabled: []

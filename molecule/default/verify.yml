@@ -130,9 +130,37 @@
             path: /etc/apt/apt.conf.d/50unattended-upgrades
           register: unattended_upgrades
 
-        - name: Assert that the desired line exists
+        - name: Assert that updates is enabled
+          assert:
+            that:
+              - "'{distro_id}:${distro_codename}-updates' in (unattended_upgrades['content'] | b64decode)"
+            fail_msg: "Unattended updates are not enabled"
+            success_msg: "Unattended updates is enabled"
+
+        - name: Assert that backport is enabled
           assert:
             that:
               - "'${distro_id}:${distro_codename}-backports' in (unattended_upgrades['content'] | b64decode)"
-            fail_msg: "The line 'desired_line_content' does not exist in /etc/apt/apt.conf.d/50unattended-upgrades"
-            success_msg: "The line 'desired_line_content' exists in /etc/apt/apt.conf.d/50unattended-upgrades"
+            fail_msg: "Backports is not enabled"
+            success_msg: "Backports is enabled"
+
+        - name: Assert that updates is enabled
+          assert:
+            that:
+              - "'{distro_id}:${distro_codename}-updates' in (unattended_upgrades['content'] | b64decode)"
+            fail_msg: "Unattended updates are not enabled"
+            success_msg: "Unattended updates is enabled"
+
+        - name: Assert that updates is enabled
+          assert:
+            that:
+              - "'Unattended-Upgrade::Automatic-Reboot \"true\"' in (unattended_upgrades['content'] | b64decode)"
+            fail_msg: "Automatic reboot is not enabled"
+            success_msg: "Automatic reboot is enabled"
+
+        - name: Assert that updates is enabled
+          assert:
+            that:
+              - "'Unattended-Upgrade::Automatic-Reboot-Time \"07:30\"' in (unattended_upgrades['content'] | b64decode)"
+            fail_msg: "Automatic reboot is not enabled"
+            success_msg: "Automatic reboot is enabled"

@@ -164,7 +164,6 @@
     - unattended_file.stat.exists|bool
     - packages_automatic_reboot
 
-
 - name: Set reboot time
   ansible.builtin.replace:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
