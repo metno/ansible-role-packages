@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `4.0.1` --- Change test setup to use molecule
 * `4.0.0` --- Updated for ansible-core 2.16. Removed support for Ubuntu Bionic.
 * `3.1.1` --- Fix meta/main.yml info
 * `3.1.0` --- added support for Ubuntu 24.04
