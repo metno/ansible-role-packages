@@ -74,16 +74,19 @@
 
 # unattended_upgrades
 
-- name: Check if unnatended upgrades file exists
-  ansible.builtin.stat:
-    path: /etc/apt/apt.conf.d/50unattended-upgrades
-  register: unattended_file
-
 - name: Install unattended upgrades
   ansible.builtin.apt:
     pkg:
       - unattended-upgrades
       - update-notifier-common
+  when: packages_unattended_upgrades
+
+- name: Wait for 50unattended-upgrades to exist
+  ansible.builtin.wait_for:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    state: present
+    timeout: 300
+  register: wait_50unattended
   when: packages_unattended_upgrades
 
 - name: Uncomment updates
@@ -94,7 +97,7 @@
     mode: '0644'
   when:
     - not packages_only_security_upgrades
-    - unattended_file.stat.exists|bool
+    - not wait_50unattended.failed
 
 - name: Comment updates
   ansible.builtin.replace:
@@ -104,7 +107,7 @@
     mode: '0644'
   when:
     - packages_only_security_upgrades
-    - unattended_file.stat.exists|bool
+    - not wait_50unattended.failed
 
 - name: Uncomment backports
   ansible.builtin.replace:
@@ -114,7 +117,7 @@
     mode: '0644'
   when:
     - packages_ubuntu_update_backports
-    - unattended_file.stat.exists|bool
+    - not wait_50unattended.failed
 
 - name: Comment backports
   ansible.builtin.replace:
@@ -124,7 +127,7 @@
     mode: '0644'
   when:
     - not packages_ubuntu_update_backports
-    - unattended_file.stat.exists|bool
+    - not wait_50unattended.failed
 
 - name: Uncomment automatic reboot
   ansible.builtin.replace:
@@ -133,7 +136,7 @@
     replace: '\1'
     mode: '0644'
   when:
-    - unattended_file.stat.exists|bool
+    - not wait_50unattended.failed
 
 - name: Enable or disable automatic reboot
   ansible.builtin.replace:
@@ -142,7 +145,7 @@
     replace: '\1{{ packages_automatic_reboot | string | lower }}\3'
     mode: '0644'
   when:
-    - unattended_file.stat.exists|bool
+    - not wait_50unattended.failed
 
 - name: Set reboot time
   ansible.builtin.replace:
@@ -151,4 +154,4 @@
     replace: '\1"{{ "%02d" | format(packages_automatic_reboot_hour | int) }}:{{ "%02d" | format(packages_automatic_reboot_minute | int) }}"\2'
     mode: '0644'
   when:
-    - unattended_file.stat.exists|bool
+    - not wait_50unattended.failed

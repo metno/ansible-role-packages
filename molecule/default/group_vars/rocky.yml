@@ -1,0 +1,9 @@
+packages_centos_install:
+  - httpd
+  - packer
+packages_centos_repositories:
+  - name: hashicorp
+    description: hashicorp repository
+    baseurl: https://rpm.releases.hashicorp.com/RHEL/{{ ansible_distribution_major_version }}/x86_64/stable
+    gpgkey: https://rpm.releases.hashicorp.com/gpg
+    enabled: true
