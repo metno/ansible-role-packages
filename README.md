@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `4.1.0` --- Add support for RHEL10. The role now supports os_family = redhat.
 * `4.0.1` --- Change test setup to use molecule
 * `4.0.0` --- Updated for ansible-core 2.16. Removed support for Ubuntu Bionic.
 * `3.1.1` --- Fix meta/main.yml info
@@ -34,15 +35,12 @@ Version
 Requirements
 ------------
 
-This role is limited to
+This role supports
 
-* Ubuntu 24.04 - Noble
-* Ubuntu 22.04 - Jammy
-* Ubuntu 20.04 - Focal
+* RedHat Based OS, version 8,9,10
+* Ubuntu 20.04, 22.04, and 24.04
 * CentOS 7
 * CentOS Stream 8
-* RHEL 8
-* RHEL 9
 
 Role Variables
 --------------
