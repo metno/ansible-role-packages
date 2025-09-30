@@ -18,27 +18,27 @@
             fail_msg: "The package 'httpd' is NOT installed!"
             success_msg: "The package 'httpd' is installed."
 
-        - name: Assert that packer is installed
+        - name: Assert that ncdu is installed
           ansible.builtin.assert:
-            that: "'packer' in ansible_facts.packages"
-            fail_msg: "The package 'packer' is NOT installed!"
-            success_msg: "The package 'packer' is installed."
+            that: "'ncdu' in ansible_facts.packages"
+            fail_msg: "The package 'ncdu' is NOT installed!"
+            success_msg: "The package 'ncdu' is installed."
           when:
             - ansible_distribution|lower != "centos"
 
-        - name: Check if hashicorp repository is installed
-          shell: "grep -R 'https://rpm.releases.hashicorp.com' /etc/yum.repos.d/*.repo"
+        - name: Check if epel repository is installed
+          shell: "grep -R 'https://download.fedoraproject.org/pub/epel' /etc/yum.repos.d/*.repo"
           register: epel_repo_check
           ignore_errors: true
           when:
             - ansible_distribution | lower != "centos"
 
-        - name: Assert the hashicorp repository is installed
+        - name: Assert the epel repository is installed
           assert:
             that:
               - "epel_repo_check.rc == 0"
-            fail_msg: "HashiCorp repository is missing."
-            success_msg: "HashiCorp repository is installed."
+            fail_msg: "epel repository is missing."
+            success_msg: "epel repository is installed."
           when:
             - ansible_distribution | lower != "centos"
 
