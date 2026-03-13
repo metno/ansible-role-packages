@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `4.1.1` --- Updated molecule test setup
 * `4.1.0` --- Add support for RHEL10. The role now supports os_family = redhat.
 * `4.0.1` --- Change test setup to use molecule
 * `4.0.0` --- Updated for ansible-core 2.16. Removed support for Ubuntu Bionic.
@@ -138,7 +139,7 @@ Example Playbook
 Testing
 -------
 
-Testing is done using Ansible Molecule. It uses Vagrant with libvirt as backend.
+Testing is done using Ansible Molecule. It uses our libvirt-provision role as backend.
 
 To run full test run:
 
@@ -151,22 +152,9 @@ To run test step by step run:
 ```bash
 molecule create
 molecule converge
+molecule idempotence
 molecule verify
 molecule destroy
-```
-
-To run toward specific scenario use `-s` option.
-```
-molecule test -s ubuntu
-```
-
-### Debug interactively
-
-This uses cluster ssh to work with all vagrant boxes at the same time.
-
-```bash
-vagrant ssh-config > ~/.ssh/config
-cat ~/.ssh/config | grep ^Host | cut -d\  -f2 | xargs cssh
 ```
 
 License
