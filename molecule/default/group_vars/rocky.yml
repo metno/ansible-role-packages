@@ -1,9 +1,0 @@
-packages_centos_install:
-  - httpd
-  - ncdu
-packages_centos_repositories:
-  - name: epel
-    description: epel repository
-    baseurl: https://download.fedoraproject.org/pub/epel/{{ ansible_distribution_major_version }}/Everything/x86_64/
-    gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
-    enabled: true
