@@ -1,6 +1,6 @@
 - name: Verify
   become: true
-  hosts: all
+  hosts: vms
   gather_facts: true
 
   tasks:
@@ -23,15 +23,11 @@
             that: "'ncdu' in ansible_facts.packages"
             fail_msg: "The package 'ncdu' is NOT installed!"
             success_msg: "The package 'ncdu' is installed."
-          when:
-            - ansible_distribution|lower != "centos"
 
         - name: Check if epel repository is installed
           shell: "grep -R 'https://download.fedoraproject.org/pub/epel' /etc/yum.repos.d/*.repo"
           register: epel_repo_check
           ignore_errors: true
-          when:
-            - ansible_distribution | lower != "centos"
 
         - name: Assert the epel repository is installed
           assert:
@@ -39,31 +35,11 @@
               - "epel_repo_check.rc == 0"
             fail_msg: "epel repository is missing."
             success_msg: "epel repository is installed."
-          when:
-            - ansible_distribution | lower != "centos"
 
         - name: Check if exclude directive exists in dnf.conf
           ansible.builtin.shell: "grep '^exclude' /etc/dnf/dnf.conf || true"
           register: dnf_exclude
           failed_when: false  # Avoid failing if the file doesn't exist
-          when:
-            - ansible_distribution | lower != "centos"
-
-        - name: Check if exclude directive exists in yum.conf
-          ansible.builtin.shell: "grep '^exclude' /etc/yum.conf || true"
-          register: yum_exclude
-          failed_when: false  # Avoid failing if the file doesn't exist
-          when:
-            - ansible_distribution | lower == "centos"
-
-        - name: Assert the package is excluded in yum.conf
-          ansible.builtin.assert:
-            that:
-              - "'emacs' in yum_exclude.stdout"
-            fail_msg: "Package 'emacs' is not excluded in /etc/yum.conf"
-            success_msg: "Package 'emacs' is correctly excluded in configuration files."
-          when:
-            - ansible_distribution | lower == "centos"
 
         - name: Assert the package is excluded in dnf.conf or yum.conf
           ansible.builtin.assert:
@@ -71,8 +47,6 @@
               - "'emacs' in dnf_exclude.stdout"
             fail_msg: "Package 'emacs' is not excluded in /etc/dnf/dnf.conf"
             success_msg: "Package 'emacs' is correctly excluded in configuration files."
-          when:
-            - ansible_distribution | lower != "centos"
 
 ##### Ubuntu Testing
 
