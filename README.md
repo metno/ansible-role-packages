@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `5.0.0` --- Added support for ubuntu 26.04, removed support for ubuntu 20.04
 * `4.1.1` --- Updated molecule test setup
 * `4.1.0` --- Add support for RHEL10. The role now supports os_family = redhat.
 * `4.0.1` --- Change test setup to use molecule
@@ -39,7 +40,7 @@ Requirements
 This role supports
 
 * RedHat Based OS, version 8,9,10
-* Ubuntu 20.04, 22.04, and 24.04
+* Ubuntu 22.04, 24.04, 26.04
 * CentOS 7
 * CentOS Stream 8
 
@@ -60,10 +61,14 @@ Role Variables
 
 * `packages_ubuntu_install` --- list of packages to install on Ubuntu, default `[]`.
 * `packages_ubuntu_repositories` --- list of dictionaries with repositories to add, `{}`. See below for dict elements.
+    * `name` --- name of repository, defaults to URI.
     * `repo` --- full repository line to repository, __mandatory__.
     * `enabled` --- boolean value with should this repository be enabled or disabled, __mandatory__.
     * `key_url` --- URL to ASCII armored key for repository, default undefined.
     * `key_id` --- PGP key ID - only needed for Ubuntu repositories, default undefined.
+    * `uri` --- URI for the distribution archive, __mandatory__ for Ubuntu 26.04 and on.
+    * `components` --- components to install, default 'main'
+
 * `packages_ubuntu_pin` --- list dicts of packges to pin on Debian, default `{}`.
     * `package` --- packages to pin, default not set.
     * `pin` --- pin to, default not set.
@@ -100,9 +105,12 @@ Example Playbook
            packages_ubuntu_install:
              - emacs
            packages_ubuntu_repositories:
-             - repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-               key_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-               key_id: 54A647F9048D5688D7DA2ABE6A030B21BA07F4FB
+             - name: docker
+               repo: deb https://download.docker.com/linux/ubuntu resolute stable
+               uri: https://download.docker.com/linux/ubuntu
+               components: stable
+               key_url: https://download.docker.com/linux/ubuntu/gpg
+               key_id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
                enabled: true
              - repo: deb https://linux.dell.com/repo/community/openmanage/940/bionic bionic main
                key_url: https://linux.dell.com/repo/pgp_pubkeys/0x1285491434D8786F.asc

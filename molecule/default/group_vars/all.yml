@@ -2,18 +2,21 @@
 packages_install: []
 packages_ubuntu_install:
   - apache2
-  - packer
+  - docker-ce
 packages_ubuntu_repositories:
-  - repo: deb https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main
-    key_url: https://apt.releases.hashicorp.com/gpg
-    key_id: 798AEC654E5C15428C8E42EEAA16FCBCA621E701
+  - name: docker
+    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    uri: https://download.docker.com/linux/ubuntu
+    components: stable
+    key_url: https://download.docker.com/linux/ubuntu/gpg
+    key_id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
     enabled: true
 packages_ubuntu_pin:
   - package: apache2
     pin: 'release n={{ ansible_distribution_release }}'
     priority: 10
 packages_ubuntu_hold:
-  - packer
+  - docker-ce
 packages_ubuntu_unhold:
   - nano
 packages_centos_exclude:
