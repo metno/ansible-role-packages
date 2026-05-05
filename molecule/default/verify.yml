@@ -59,8 +59,8 @@
             fail_msg: "The package 'apache' is NOT installed!"
             success_msg: "The package 'apache2' is installed."
 
-        - name: Check if hashicorp repository is installed
-          shell: "grep -R 'https://apt.releases.hashicorp.com' /etc/apt/sources.list /etc/apt/sources.list.d/"
+        - name: Check if docker repository is installed
+          shell: "grep -R 'https://download.docker.com/linux/ubuntu' /etc/apt/sources.list /etc/apt/sources.list.d/"
           register: repo_check
           ignore_errors: true
 
@@ -77,8 +77,8 @@
           register: file_data
           ignore_errors: true
 
-        - name: Check if packer is held
-          shell: "dpkg --get-selections | grep '^packer' | grep 'hold'"
+        - name: Check if docker is held
+          shell: "dpkg --get-selections | grep '^docker-ce' | grep 'hold'"
           register: held_status
           changed_when: false
           failed_when: false  # Ensure the task doesn't fail even if the package is not found or not held
