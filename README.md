@@ -6,6 +6,7 @@ This role handles installed packages, repositories and pinning.
 Version
 -------
 
+* `5.0.1` --- Fix state on new deb822 repository task
 * `5.0.0` --- Added support for ubuntu 26.04, removed support for ubuntu 20.04
 * `4.1.1` --- Updated molecule test setup
 * `4.1.0` --- Add support for RHEL10. The role now supports os_family = redhat.

@@ -40,7 +40,7 @@
     suites: '{{ ansible_distribution_release }}'
     components: "{{ item.components | default('main') }}"
     signed_by: '{{ item.key_url }}'
-    state: present
+    state: '{{ "present" if item.enabled | bool else "absent" }}'
     enabled: '{{ item.enabled }}'
   loop: '{{ packages_ubuntu_repositories }}'
   when: ansible_distribution_version | int >= 26
